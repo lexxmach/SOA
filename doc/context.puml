@@ -1,0 +1,18 @@
+@startuml Social Network context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+skinparam wrapWidth 300
+LAYOUT_WITH_LEGEND()
+LAYOUT_LANDSCAPE()
+
+title
+<b>YaNetwork v2024.06.18</b>
+ <i>Yet another Социальная сеть</i>
+end title
+
+Person(user, "Пользователь")
+System(posts, "Социальная сеть", "Система постов")
+
+Rel_D(user, posts, "Все операции с социальной сетью")
+
+@enduml

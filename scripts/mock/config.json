@@ -1,0 +1,13 @@
+{
+    "port": 8888,
+    "title": "YaFacebook v1",
+    "version": "0.0.1",
+
+    "db": {
+        "mock": true,
+        "host": "localhost",
+        "port": 1234
+    },
+
+    "jwt": "some_jwt"
+}

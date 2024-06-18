@@ -1,0 +1,39 @@
+@startuml Social Network containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+skinparam wrapWidth 300
+LAYOUT_WITH_LEGEND()
+LAYOUT_LANDSCAPE()
+
+title
+<b>YaNetwork v2024.06.18</b>
+ <i>Yet another Социальная сеть</i>
+end title
+
+Person(user, "Пользователь")
+
+System_Boundary(main, "Главный сервис трекера") {
+    Container(main_back, "Backend главного сервиса", "Golang", "Клиентское API, регистрация, аутентификация")
+    ContainerDb(main_db, "БД главного сервиса", "PostgreSQL", "Хранения данных пользователей")
+    Rel_R(main_back, main_db, "Обновляет/читает данные пользователя")
+}
+System_Boundary(stats, "Сервис статистики") {
+    Container(stats_back, "Backend сервиса статистики", "Golang", "Подсчет лайков и просмотров задач")
+    ContainerDb(stats_db, "БД стататистики", "Clickhouse", "Хранение статистики лайков и просмотров задач")
+    Rel_R(stats_back, stats_db, "Обновляет/читает статистику")
+    Rel_U(main_back, stats_back, "Чтение статистики", "gRPC")
+}
+System_Boundary(posts, "Сервис постов и комментариев") {
+    Container(tasks_back, "Backend сервиса постов и комментариев", "Golang", "Создание/редактирование постов и комментариев")
+    ContainerDb(tasks_db, "БД сервиса постов и комментариев", "PostgreSQL", "Хранение информации о постах и комментариях")
+    Rel_R(tasks_back, tasks_db, "Обновляет/читает данные постов и комментариев")
+    Rel_U(main_back, tasks_back, "Изменение/чтение постов и комменатариев", "gRPC")
+}
+
+SystemQueue(kafka, "Kafka", "События сервиса постов и комментариев")
+
+Rel_D(user, main_back, "Управляет постами", "REST API")
+Rel(tasks_back, kafka, "Отпраление событий")
+Rel(kafka, stats_back, "Отправление событий")
+
+@enduml
