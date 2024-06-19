@@ -1,0 +1,1 @@
+go run cmd/api/main.go -c scripts/mock/api_config.json

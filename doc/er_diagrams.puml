@@ -1,0 +1,52 @@
+@startuml Social Network ER diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+skinparam wrapWidth 300
+LAYOUT_LANDSCAPE()
+
+object User {
+    FirstName: string
+	LastName:  string
+
+	BirthDate: string
+	Email:     string
+
+	Phone: string
+
+    Login: string
+    Password: string
+}
+
+object Post {
+    ID: uint64
+
+    Owner: string
+
+    Body: string
+}
+
+object Comment {
+    ID: uint64
+
+    PostID: uint64
+    Owner: string
+    RepliedTo: uint64/null
+
+    Body: string
+}
+
+object Statistics {
+    PostID: uint64/null
+    CommentID: uint64/null
+
+    Likes: uint64
+    Views: uint64
+}
+
+User }|..o| Post
+Post ||..o{ Comment
+Post ||..|| Statistics
+User ||..o{ Comment
+Comment ||..|| Statistics
+
+@enduml

@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+package proto;
+
+import "proto/posts/post.proto";
+
+option go_package = "SOA/proto/api";
+
+service PostsService {
+    rpc CreatePost(CreatePostRequest) returns (CreatePostResponse) {}
+
+    rpc UpdatePost(UpdatePostRequest) returns (UpdatePostResponse) {}
+
+    rpc DeletePost(DeletePostRequest) returns (DeletePostResponse) {}
+
+    rpc GetPost(GetPostRequest) returns (proto.Post) {}
+    
+    rpc ListPosts(ListPostsRequest) returns (ListPostsResponse) {}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+message CreatePostRequest {
+    string owner = 1;
+    string body = 2;
+}
+
+message CreatePostResponse {
+    uint64 id = 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+message UpdatePostRequest {
+    string owner = 1;
+    uint64 id = 2;
+    string body = 3;
+}
+
+message UpdatePostResponse {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+message DeletePostRequest {
+    string owner = 1;
+    uint64 id = 2;
+}
+
+message DeletePostResponse {
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+message GetPostRequest {
+    uint64 id = 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+message ListPostsRequest {
+    uint64 page_num = 1;
+    uint64 page_size = 2;
+}
+
+message ListPostsResponse {
+    repeated proto.Post Posts = 1;
+}

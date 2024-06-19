@@ -1,0 +1,79 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5010:5432
+    volumes: 
+      - db:/var/lib/postgresql/data
+    networks:
+      - common_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  db_posts:
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5435:5432
+    volumes: 
+      - db:/var/lib/postgresql/data
+    networks:
+      - common_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    restart: unless-stopped
+
+  posts:
+    container_name: posts
+    build:
+      context: ../
+      dockerfile: ./build/posts/Dockerfile
+    image: posts
+    depends_on:
+      db_posts:
+        condition: service_healthy
+    ports:
+      - 8001:8001
+    networks:
+      - common_network
+      - grpc_network
+    restart: unless-stopped
+
+  users-api:
+    container_name: users-api
+    build:
+      context: ../
+      dockerfile: ./build/users/Dockerfile
+    image: users-api
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8000:8000
+    networks:
+      - common_network
+      - grpc_network
+    restart: unless-stopped
+
+volumes:
+  db:
+    driver: local
+networks:
+  common_network:
+  grpc_network:
+    driver: bridge
