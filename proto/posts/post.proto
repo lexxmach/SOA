@@ -1,0 +1,12 @@
+syntax = "proto3";
+
+package proto;
+
+option go_package = "SOA/proto/posts";
+
+message Post {
+    uint64 id = 1;
+    string owner = 2;
+
+    string body = 3;
+}

@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"SOA/cmd/api/auth"
+	"SOA/cmd/users/auth"
 	"SOA/internal/api"
 	"SOA/internal/common"
 	"SOA/internal/db"
@@ -15,12 +15,12 @@ import (
 )
 
 var UpdateOperation = huma.Operation{
-	OperationID:   "update",
+	OperationID:   "updateUser",
 	Method:        http.MethodPost,
-	Path:          "/update",
+	Path:          "/api/update",
 	Summary:       "Update user",
 	Description:   "Update user with response of user token",
-	Tags:          []string{"operations"},
+	Tags:          []string{"api", "operations"},
 	DefaultStatus: http.StatusOK,
 }
 
@@ -64,7 +64,7 @@ func (i *updateInput) Resolve(ctx huma.Context) []error {
 }
 
 type UpdateHandler struct {
-	DB        db.Database
+	DB        db.ApiDatabase
 	JWTSecret string
 }
 
@@ -81,7 +81,7 @@ func (uh *UpdateHandler) Handle(ctx context.Context, allInput *updateInput) (*st
 		FirstName: input.FirstName,
 		LastName:  input.LastName,
 		BirthDate: common.Must(time.Parse(YYYYMMDD, input.BirthDate)),
-		Email:     *common.Must(mail.ParseAddress(input.Email)),
+		Email:     *common.Must(api.ParseAddress(input.Email)),
 		Phone:     input.Phone,
 
 		Creds: api.UserCredentials{

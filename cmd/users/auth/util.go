@@ -31,7 +31,7 @@ func MustCreateToken(login api.UserLogin, jwtSecret string) api.UserToken {
 
 func UnmarshalToken(jwtToken string, jwtSecret string) (string, error) {
 	token, err := jwt.Parse(jwtToken, func(t *jwt.Token) (interface{}, error) {
-		return jwtSecret, nil
+		return []byte(jwtSecret), nil
 	})
 
 	if err != nil {

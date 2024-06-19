@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"SOA/cmd/api/auth"
+	"SOA/cmd/users/auth"
 	"SOA/internal/api"
 	"SOA/internal/db"
 	"context"
@@ -12,12 +12,12 @@ import (
 )
 
 var AuthOperation = huma.Operation{
-	OperationID:   "authenticate",
+	OperationID:   "authenticateUser",
 	Method:        http.MethodPost,
-	Path:          "/auth",
+	Path:          "/api/auth",
 	Summary:       "Auth user",
 	Description:   "Auth user with response of user token",
-	Tags:          []string{"auth"},
+	Tags:          []string{"api", "auth"},
 	DefaultStatus: http.StatusOK,
 }
 
@@ -33,7 +33,7 @@ type authOutput struct {
 }
 
 type AuthHandler struct {
-	DB        db.Database
+	DB        db.ApiDatabase
 	JWTSecret string
 }
 

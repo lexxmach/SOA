@@ -1,4 +1,4 @@
-package api
+package posts
 
 import (
 	"encoding/json"
@@ -6,10 +6,7 @@ import (
 )
 
 type Config struct {
-	Port uint16 `json:"port"`
-
-	Title   string `json:"title"`
-	Version string `json:"version"`
+	Address string `json:"address"`
 
 	DB struct {
 		// If set to true, db will bocked
@@ -20,10 +17,6 @@ type Config struct {
 		Password string `json:"password"`
 		Port     uint16 `json:"port"`
 	} `json:"db"`
-
-	PostAddress string `json:"post_address"`
-
-	JWTSecret string `json:"jwt"`
 }
 
 func MustGetConfig(path string) *Config {
