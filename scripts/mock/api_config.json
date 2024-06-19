@@ -1,0 +1,17 @@
+{
+    "port": 8000,
+    "title": "YaFacebook v1",
+    "version": "0.0.1",
+
+    "db": {
+        "mock": true,
+
+        "host": "db",
+        "user": "postgres",
+        "password": "postgres",
+        "port": 5432
+    },
+
+    "post_address": "posts:8001",
+    "jwt": "some_jwt"
+}

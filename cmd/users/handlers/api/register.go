@@ -76,6 +76,12 @@ type RegisterHandler struct {
 func (rh *RegisterHandler) Handle(ctx context.Context, allInput *registerInput) (*registerOutput, error) {
 	// should never fail cause of validation
 	input := allInput.Body
+
+	_, err := rh.DB.GetUser(api.UserLogin{Login: input.Login})
+	if err == nil {
+		return nil, huma.Error400BadRequest("User with such login already exists")
+	}
+
 	user := api.User{
 		FirstName: input.FirstName,
 		LastName:  input.LastName,
@@ -91,7 +97,7 @@ func (rh *RegisterHandler) Handle(ctx context.Context, allInput *registerInput) 
 		},
 	}
 
-	err := rh.DB.CreateUser(user)
+	err = rh.DB.CreateUser(user)
 	if err != nil {
 		return nil, err
 	}

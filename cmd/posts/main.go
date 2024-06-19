@@ -22,7 +22,7 @@ func main() {
 	var database db.PostDatabase
 	{
 		if config.DB.Mock {
-			panic("unsupported mock db")
+			database = db.CreatePostsMockDB()
 		} else {
 			dsn := fmt.Sprintf(
 				"host=%s user=%s password=%s dbname=postgres port=%d sslmode=disable",

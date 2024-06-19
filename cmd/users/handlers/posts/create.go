@@ -4,7 +4,6 @@ import (
 	"SOA/cmd/users/auth"
 	pb "SOA/proto/api"
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -41,10 +40,10 @@ func (ch *CreateHandler) Handle(ctx context.Context, allInput *createInput) (*cr
 
 	login, err := auth.UnmarshalToken(input.JWTToken, ch.JWTSecret)
 	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal jwt token: %w", err)
+		return nil, huma.Error401Unauthorized("Wrong token")
 	}
 
-	out, err := ch.Client.CreatePost(context.Background(), &pb.CreatePostRequest{
+	out, err := ch.Client.CreatePost(ctx, &pb.CreatePostRequest{
 		Owner: login,
 		Body:  input.Body,
 	})

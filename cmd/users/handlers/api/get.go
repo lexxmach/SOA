@@ -11,8 +11,8 @@ import (
 
 var GetOperation = huma.Operation{
 	OperationID:   "getUser",
-	Method:        http.MethodPost,
-	Path:          "/api/get",
+	Method:        http.MethodGet,
+	Path:          "/api/get/{login}",
 	Summary:       "Get user",
 	Description:   "Get user",
 	Tags:          []string{"api", "operations"},
@@ -20,9 +20,7 @@ var GetOperation = huma.Operation{
 }
 
 type getInput struct {
-	Body struct {
-		Login string `json:"login" example:"Lexmach"`
-	}
+	Login string `path:"login" json:"login" example:"Lexmach"`
 }
 
 type UserOut struct {
@@ -45,12 +43,10 @@ type GetHandler struct {
 	DB db.ApiDatabase
 }
 
-func (uh *GetHandler) Handle(ctx context.Context, allInput *getInput) (*getOutput, error) {
-	input := allInput.Body
-
+func (uh *GetHandler) Handle(ctx context.Context, input *getInput) (*getOutput, error) {
 	user, err := uh.DB.GetUser(api.UserLogin{Login: input.Login})
 	if err != nil {
-		return nil, err
+		return nil, huma.Error400BadRequest("User doesnt exist")
 	}
 
 	return &getOutput{

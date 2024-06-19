@@ -11,7 +11,7 @@ import (
 
 var ListPostOperation = huma.Operation{
 	OperationID:   "listPost",
-	Method:        http.MethodPost,
+	Method:        http.MethodGet,
 	Path:          "/posts/list",
 	Summary:       "List post",
 	Description:   "List post",
@@ -20,10 +20,8 @@ var ListPostOperation = huma.Operation{
 }
 
 type listPostInput struct {
-	Body struct {
-		PageNum  uint64 `json:"page_num"`
-		PageSize uint64 `json:"page_size"`
-	}
+	PageNum  uint64 `query:"pagenum" json:"page_num"`
+	PageSize uint64 `query:"pagesize" json:"page_size"`
 }
 
 type listPostOutput struct {
@@ -34,10 +32,8 @@ type ListPostHandler struct {
 	Client pb.PostsServiceClient
 }
 
-func (ch *ListPostHandler) Handle(ctx context.Context, allInput *listPostInput) (*listPostOutput, error) {
-	input := allInput.Body
-
-	out, err := ch.Client.ListPosts(context.Background(), &pb.ListPostsRequest{
+func (ch *ListPostHandler) Handle(ctx context.Context, input *listPostInput) (*listPostOutput, error) {
+	out, err := ch.Client.ListPosts(ctx, &pb.ListPostsRequest{
 		PageNum:  input.PageNum,
 		PageSize: input.PageSize,
 	})

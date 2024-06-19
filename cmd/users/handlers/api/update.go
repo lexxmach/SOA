@@ -6,7 +6,6 @@ import (
 	"SOA/internal/common"
 	"SOA/internal/db"
 	"context"
-	"fmt"
 	"net/http"
 	"net/mail"
 	"time"
@@ -73,7 +72,7 @@ func (uh *UpdateHandler) Handle(ctx context.Context, allInput *updateInput) (*st
 
 	login, err := auth.UnmarshalToken(input.JWTToken, uh.JWTSecret)
 	if err != nil {
-		return nil, fmt.Errorf("failed to unmarshal jwt token: %w", err)
+		return nil, huma.Error401Unauthorized("Wrong token")
 	}
 
 	// should never fail cause of validation

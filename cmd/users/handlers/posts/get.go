@@ -12,7 +12,7 @@ import (
 var GetPostOperation = huma.Operation{
 	OperationID:   "getPost",
 	Method:        http.MethodPost,
-	Path:          "/posts/get",
+	Path:          "/posts/get/{id}",
 	Summary:       "Get post",
 	Description:   "Get post",
 	Tags:          []string{"posts"},
@@ -20,9 +20,7 @@ var GetPostOperation = huma.Operation{
 }
 
 type getPostInput struct {
-	Body struct {
-		ID uint64 `json:"id"`
-	}
+	ID uint64 `path:"id" json:"id"`
 }
 
 type getPostOutput struct {
@@ -34,14 +32,12 @@ type GetPostHandler struct {
 	JWTSecret string
 }
 
-func (ch *GetPostHandler) Handle(ctx context.Context, allInput *getPostInput) (*getPostOutput, error) {
-	input := allInput.Body
-
-	out, err := ch.Client.GetPost(context.Background(), &pb.GetPostRequest{
+func (ch *GetPostHandler) Handle(ctx context.Context, input *getPostInput) (*getPostOutput, error) {
+	out, err := ch.Client.GetPost(ctx, &pb.GetPostRequest{
 		Id: input.ID,
 	})
 	if err != nil {
-		return nil, err
+		return nil, huma.Error400BadRequest("No such post exist")
 	}
 
 	return &getPostOutput{Body: &posts.Post{

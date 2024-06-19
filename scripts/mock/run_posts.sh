@@ -1,0 +1,1 @@
+go run cmd/posts/main.go -c scripts/mock/posts_config.json

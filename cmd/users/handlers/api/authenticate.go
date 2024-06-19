@@ -5,14 +5,13 @@ import (
 	"SOA/internal/api"
 	"SOA/internal/db"
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
 )
 
 var AuthOperation = huma.Operation{
-	OperationID:   "authenticateUser",
+	OperationID:   "auth",
 	Method:        http.MethodPost,
 	Path:          "/api/auth",
 	Summary:       "Auth user",
@@ -47,10 +46,10 @@ func (ah *AuthHandler) Handle(ctx context.Context, allInput *authInput) (*authOu
 	}
 	user, err := ah.DB.GetUser(creds.Login)
 	if err != nil {
-		return nil, err
+		return nil, huma.Error400BadRequest("User doesnt exist")
 	}
 	if auth.CompareSaltedAndOrigin(user.GetPassword(), creds.Password) {
-		return nil, fmt.Errorf("wrong password")
+		return nil, huma.Error401Unauthorized("Wrong password")
 	}
 
 	return &authOutput{auth.MustCreateToken(user.GetLogin(), ah.JWTSecret)}, nil

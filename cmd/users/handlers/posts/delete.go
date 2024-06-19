@@ -4,7 +4,6 @@ import (
 	"SOA/cmd/users/auth"
 	pb "SOA/proto/api"
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/danielgtaylor/huma/v2"
@@ -12,7 +11,7 @@ import (
 
 var DeleteOperation = huma.Operation{
 	OperationID:   "deletePost",
-	Method:        http.MethodDelete,
+	Method:        http.MethodPost,
 	Path:          "/posts/delete",
 	Summary:       "Delete post",
 	Description:   "Delete post",
@@ -37,10 +36,17 @@ func (ch *DeleteHandler) Handle(ctx context.Context, allInput *deleteInput) (*st
 
 	login, err := auth.UnmarshalToken(input.JWTToken, ch.JWTSecret)
 	if err != nil {
-		return &struct{}{}, fmt.Errorf("failed to unmarshal jwt token: %w", err)
+		return &struct{}{}, huma.Error401Unauthorized("Wrong token")
 	}
 
-	_, err = ch.Client.DeletePost(context.Background(), &pb.DeletePostRequest{
+	_, err = ch.Client.GetPost(ctx, &pb.GetPostRequest{
+		Id: input.ID,
+	})
+	if err != nil {
+		return nil, huma.Error400BadRequest("No such post exist")
+	}
+
+	_, err = ch.Client.DeletePost(ctx, &pb.DeletePostRequest{
 		Owner: login,
 		Id:    input.ID,
 	})
@@ -48,5 +54,5 @@ func (ch *DeleteHandler) Handle(ctx context.Context, allInput *deleteInput) (*st
 		return nil, err
 	}
 
-	return &struct{}{}, nil
+	return &struct{}{}, err
 }

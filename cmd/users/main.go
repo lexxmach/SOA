@@ -34,7 +34,7 @@ func main() {
 	var database db.ApiDatabase
 	{
 		if config.DB.Mock {
-			database = db.CreateMockDB()
+			database = db.CreateApiMockDB()
 		} else {
 			dsn := fmt.Sprintf(
 				"host=%s user=%s password=%s dbname=postgres port=%d sslmode=disable",

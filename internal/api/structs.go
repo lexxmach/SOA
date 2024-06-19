@@ -19,7 +19,7 @@ type UserCredentials struct {
 
 type UserToken struct {
 	// JWT token
-	Token string `json:"oauth"`
+	Token string `json:"token"`
 }
 
 type Address mail.Address

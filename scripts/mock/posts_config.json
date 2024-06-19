@@ -1,0 +1,12 @@
+{
+    "address": ":8001",
+
+    "db": {
+        "mock": true,
+
+        "host": "db_posts",
+        "user": "postgres",
+        "password": "postgres",
+        "port": 5432
+    }
+}
